@@ -21,10 +21,18 @@
 <script src="../../js/jquery.validate.js" type="text/javascript"></script>
 <script src="../../js/formValidation.js" type="text/javascript"></script>
 <script src="../../js/main_init.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../js/jquery.noty.js"></script>
+<script type="text/javascript" src="../../js/promise.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../css/jquery.noty.css"/>
+<link rel="stylesheet" type="text/css" href="../../css/noty_theme_default.css"/>
+<link rel="stylesheet" href="../../css/jquery.tooltip.css" type="text/css" />
+    
+    <script type="text/javascript" src="../../js/jquery.tooltip.js"></script>
 
 <style type="text/css">
       html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0; background-image: url("../../images/plain.png"); background-size: 100% 100%; background-repeat: repeat; }
+      body { height: 100%; margin: 0; padding: 0; background-image: url("images/plain.png"); background-size: 100% 100%; background-repeat: repeat; }
       #map_canvas { height: 100% }
 </style>
 
@@ -37,12 +45,55 @@
 </style>
 <script type="text/javascript" language="javascript" src="../../js/jquery.dataTables.js"></script>
 
-
+<style type="text/css">
+    
+    #test{
+    background-color:red;
+    width:10px;
+    height:22.5px;
+    display:block;
+    border-radius:12px;
+    -moz-border-radius:12px;
+    -webkit-border-radius:12px;
+    -khtml-border-radius:12px;
+    font-size:15px;
+    color:#fff;
+text-align:center;
+}
+</style>
 
  
 </head>
 
 <script>  
+    
+     $(document).ready(function(){
+  var msgcount=<?php echo($msgcount) ?>;
+    //alert(msgcount);
+    $.noty({
+  layout : 'topRight', // (top, topLeft, topCenter, topRight, bottom, center, bottomLeft, bottomRight)
+    // theme name (accessable with CSS)
+  animateOpen : {height: 'toggle'}, // opening animation
+  animateClose : {height: 'toggle'}, // closing animation
+   // easing
+  text : 'You have '+msgcount + ' unread messages', // notification text
+  type : 'notification', // noty type (alert, success, error)
+  speed : 500, // opening & closing animation speed
+  timeout : 5000, // delay for closing event. Set false for sticky notifications
+  closeButton : true, // enables the close button when set to true
+  closeOnSelfClick : true, // close the noty on self click when set to true
+  closeOnSelfHover : false, // close the noty on self mouseover when set to true
+  force : false, // adds notification to the beginning of queue when set to true
+  onShow : false, // callback for on show
+  onClose : false, // callback for on close
+  buttons : false, // an array of buttons
+  modal : false// adds modal layer when set to true
+
+  
+});
+
+   
+});
     
     
     
@@ -51,7 +102,7 @@
         // Populate crops table for all the available crops that a user can trade with
            $.ajax({
                 type:"POST",
-                url:"http://localhost:8888/index.php/pages/get_crops",
+                url:"http://localhost/gs/php/index.php/pages/get_crops",
                 success: function(response)
                 {
                      
@@ -120,6 +171,12 @@
          
          
         //   showAvailableCrops();
+               var i = 0;
+    (function(){
+    i++;
+    $('#test').html(i)
+    setTimeout(arguments.callee, 1000);
+    })();
            
      });
                      
@@ -131,7 +188,7 @@
         
         $.ajax({
             type:"POST",
-            url:"http://localhost:8888/index.php/pages/get_userdata",
+            url:"http://localhost/gs/php/index.php/pages/get_userdata",
             success: function(response)
             {
                      
@@ -159,7 +216,12 @@
     
     function myCrops_f()
     {
-        window.location = "http://localhost:8888/index.php/crop/mycrops/"+'<?php echo $this->session->userdata('username'); ?>';
+        window.location = "http://localhost/gs/php/index.php/crop/mycrops/"+'<?php echo $this->session->userdata('username'); ?>';
+    }
+    
+    function allcrops_f()
+    {
+        window.location = "http://localhost/gs/php/index.php/crop/allcrops";
     }
     
    
@@ -197,7 +259,7 @@
 
         $.ajax({
         type:"POST",
-        url:"http://localhost:8888/index.php/pages/get_mapdata",
+        url:"http://localhost/gs/php/index.php/pages/get_mapdata",
         data: data,
         success: function(response)
             {
@@ -265,6 +327,7 @@
             }
             });
         }
+ 
            
             
             
@@ -292,7 +355,7 @@
     <ul id="menu">
         <li class="logo"><img style="float:left;" alt="" src="../../images/menu_left.png"/> </li>
         
-        <li><a href='#' id="messages" style="width: 160px">Messages</a></li>
+        <li><a href="http://localhost/gs/php/index.php/message/mymessages/<?php echo $this->session->userdata('username'); ?>" id="messages" style="width: 160px">Messages (<?php echo($msgcount) ?>)</a></li>
         
         <li><a href='#' id="username" style="width: 160px">Options</a>
            
@@ -306,6 +369,7 @@
                     
                     <li><a href="#" id="mycrops">My Crops</a></li>
                     <li><a href="#" id="nearByCrops">Crops Around Me</a></li>
+                    <li><a href="#" id="allcrops">All crops</a></li>
                     <li><a href="#" id="settings">Settings</a></li>
                     <li><a href="#" id="logout">Logout</a></li>
                     
@@ -317,8 +381,28 @@
             </ul>
         </li>
        
-        <li><a href='#' id="notifications" style="width: 160px">Notifications</a></li>
-        
+        <li><a href='#' id="notifications" style="width: 160px">Notifications <strong><b id ="subid"style="background:red; text:black; "> &nbsp;<?php echo(count($bulletin)) ?>&nbsp; </b></strong></a>
+        <ul id="notifications">
+                   
+                       
+                        <?php 
+                         echo count($bulletin);
+                        for ($c = 0; $c < count($bulletin); $c++) {
+                           
+                        echo '<li>';
+                        if($c=0){echo ' <img class="corner_inset_left" alt="" src="../../images/corner_inset_left.png"/>';}
+                        echo '<a href="#">'.$bulletin[$c]->{'text'}.'</a>';
+                        echo '</li>';
+                            
+                        
+                        }
+                        ?>
+                        
+                       
+            </ul>
+        </li> 
+     
+       
     </ul>
     
 <img style="float:left;" alt="" src="../../images/menu_right.png"/>
@@ -327,7 +411,7 @@
     
 <div id="userSettingsDialog">
     
-  <form id="userSettingsForm" action="http://localhost:8888/index.php/pages/post_userdata" method="POST">
+  <form id="userSettingsForm" action="http://localhost/gs/php/index.php/pages/post_userdata" method="POST">
       <table>
                 <tr>
                     <td><label for="name" align="left">Name</label> </td>                             
@@ -355,7 +439,7 @@
     
 <div id="mapData">
     
-  <form id="mapdataForm" action="http://localhost:8888/index.php/pages/get_mapdata" method="POST">
+  <form id="mapdataForm" action="http://localhost/gs/php/index.php/pages/get_mapdata" method="POST">
       <table>
                 <tr>
                     <td><label for="name" align="left">Crop Name</label> </td>                             
@@ -394,7 +478,7 @@
             
 		<div id="profilePicture" class="boxed">
 			<h2 class="title">Welcome, <?php echo $this->session->userdata('username'); ?></h2>
-                        <image src="../../css/images/img04.jpg" style="widht: 300px; height:100px" >
+                        <image src="css/images/img04.jpg" style="widht: 300px; height:100px" >
 			
 		</div>
             

@@ -1,3 +1,5 @@
+
+<?php session_start();?>
 <html>                                                                  
     <head>   
      
@@ -8,27 +10,27 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
-        <link href="../../../css/style.css" rel="stylesheet" type="text/css"/>
-        <link href="../../../css/jquery-ui.css" rel="stylesheet" type="text/css"/>  
-        <link rel="stylesheet" type="text/css" href="../../../css/jquery.validate.css" />
-        <link rel="stylesheet" type="text/css" href="../../../css/style1.css" />
+        <link href="../../css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="../../css/jquery-ui.css" rel="stylesheet" type="text/css"/>  
+        <link rel="stylesheet" type="text/css" href="../../css/jquery.validate.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/style1.css" />
 
         
 
-        <script src="../../../js/jquery.validate.js" type="text/javascript"></script>
-        <script src="../../../js/formValidation.js" type="text/javascript"></script>
+        <script src="../../js/jquery.validate.js" type="text/javascript"></script>
+        <script src="../../js/formValidation.js" type="text/javascript"></script>
         
            
 <style type="text/css" title="currentStyle">
-        @import "../../../css/demo_page.css";
-        @import "../../../css/jquery.dataTables.css";
+        @import "../../css/demo_page.css";
+        @import "../../css/jquery.dataTables.css";
 </style>
-<script type="text/javascript" language="javascript" src="../../../js/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="../../js/jquery.dataTables.js"></script>
 
-  <script type="text/javascript" src="../../../js/all_crops.js"></script>
+  <script type="text/javascript" src="../../js/all_crops.js"></script>
         
         
-        <link rel="stylesheet" type="text/css" href="../../../css/all_crops.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/all_crops.css" />
 
      
         
@@ -42,7 +44,7 @@
         <button type="button" id ="addnewcrop" >Add a Crop</button> 
         <br/>
         <br/>
-        <table id="table_id" class="display" style="width: 800px;">
+        <table id="table_id" class="display" style="width: 800px; background-color:grey; ">
             <thead>
                 <tr>
                     <th style="width: 20px; ">Crop name</th>
@@ -78,9 +80,9 @@
                 <div class="form_description">
                     <h2>Add a crop</h2>
                     <p>Please fill in the details of a crop and click submit.</p>
-                    <p id="emptycrop" style="display: none" > <font color="red">Please select a Crop.</font></p>
+<!--                    <p id="emptycrop" style="display: none" > <font color="red">Please select a Crop.</font></p>
                     <p id="emptydesc" style="display: none" > <font color="red">Please enter the Description.</font></p>
-                    <p id="existingcrop" style="display: none" > <font color="red">A crop entry already exists with the given name-Sorry.</font></p>
+                    <p id="existingcrop" style="display: none" > <font color="red">A crop entry already exists with the given name-Sorry.</font></p>-->
 
                 </div>
                 <table>

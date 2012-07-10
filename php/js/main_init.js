@@ -19,10 +19,13 @@ function main_init()
     
     var mycrops = document.getElementById('mycrops');
     mycrops.onclick = myCrops_f;
+    
+    var mycrops = document.getElementById('allcrops');
+    mycrops.onclick = allcrops_f;
 
     function logout_f()
     {
-        window.location = "http://localhost:8888/index.php/pages/logout";
+        window.location = "http://localhost/gs/php/index.php/pages/logout";
     }
 
 

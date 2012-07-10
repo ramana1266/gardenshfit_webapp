@@ -9,28 +9,28 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
-<link href="../../css/style.css" rel="stylesheet" type="text/css"/>
-<link href="../../css/jquery-ui.css" rel="stylesheet" type="text/css"/>  
-<link rel="stylesheet" type="text/css" href="../../css/jquery.validate.css" />
-<link rel="stylesheet" type="text/css" href="../../css/style1.css" />
+<link href="css/style.css" rel="stylesheet" type="text/css"/>
+<link href="css/jquery-ui.css" rel="stylesheet" type="text/css"/>  
+<link rel="stylesheet" type="text/css" href="css/jquery.validate.css" />
+<link rel="stylesheet" type="text/css" href="css/style1.css" />
    
-<script src="../../external/jquery.bgiframe-2.1.2.js"></script>
-<script src="../../ui/jquery.ui.core.js"></script>
-<script src="../../ui/jquery.ui.widget.js"></script>
-<script src="../../ui/jquery.ui.mouse.js"></script>
-<script src="../../ui/jquery.ui.draggable.js"></script>
-<script src="../../ui/jquery.ui.position.js"></script>
-<script src="../../ui/jquery.ui.resizable.js"></script>
-<script src="../../ui/jquery.ui.dialog.js"></script>
-<script src="../../ui/jquery.effects.core.js"></script>
-<script src="../../ui/jquery.effects.blind.js"></script>
-<script src="../../ui/jquery.effects.explode.js"></script>
+<script src="external/jquery.bgiframe-2.1.2.js"></script>
+<script src="ui/jquery.ui.core.js"></script>
+<script src="ui/jquery.ui.widget.js"></script>
+<script src="ui/jquery.ui.mouse.js"></script>
+<script src="ui/jquery.ui.draggable.js"></script>
+<script src="ui/jquery.ui.position.js"></script>
+<script src="ui/jquery.ui.resizable.js"></script>
+<script src="ui/jquery.ui.dialog.js"></script>
+<script src="ui/jquery.effects.core.js"></script>
+<script src="ui/jquery.effects.blind.js"></script>
+<script src="ui/jquery.effects.explode.js"></script>
 
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
 
-<script src="../../js/jquery.validate.js" type="text/javascript"></script>
-<script src="../../js/formValidation.js" type="text/javascript"></script>
-<script src="../../js/initialization.js" type="text/javascript"></script>
+<script src="js/jquery.validate.js" type="text/javascript"></script>
+<script src="js/formValidation.js" type="text/javascript"></script>
+<script src="js/initialization.js" type="text/javascript"></script>
     
     
    
@@ -89,7 +89,7 @@ function checkUsername(name)
 <div style="margin-left:40%; position: absolute; top: 0">
     <ul id="menu">
         <li class="logo">
-            <img style="float:left;" alt="" src="../../images/menu_left.png"/> 
+            <img style="float:left;" alt="" src="images/menu_left.png"/> 
         </li>
 
         <li><a href='#' id="login">Login</a>
@@ -98,15 +98,15 @@ function checkUsername(name)
 
         </li>
     </ul>
-    <img style="float:left;" alt="" src="../../images/menu_right.png"/>
+    <img style="float:left;" alt="" src="images/menu_right.png"/>
 
 </div>  
       
-<img class="logo1" src="../../images/logo.png" />
+<img class="logo1" src="images/logo.png" />
 
 <div id="loginDialog">
 	
-	<form id="loginForm" action="http://localhost:8888/index.php/pages/authenticate" method="POST">
+	<form id="loginForm" action="http://localhost/gs/php/index.php/pages/authenticate" method="POST">
  	
             <table>
                         <tr>

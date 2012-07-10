@@ -27,7 +27,7 @@ public function adduser()
 public function authenticate()
           
 {
-  
+        //echo '1';
         $this->load->library('session');
         session_start();
         
@@ -35,8 +35,7 @@ public function authenticate()
         $password = $_POST['password'];
         
        
-        
-        
+       
         // Calls in Web service to check whether the provided credentials exist or not
         
         $url = 'http://dev-gardenshift.rhcloud.com/Gardenshift/authenticate';
@@ -51,18 +50,44 @@ public function authenticate()
         
         $page = curl_exec ($c);
         curl_close ($c);
-        
+        echo $page;
         
         // Calls in web service to display all the information of all the users in order to see which all crops are being grown
-        
+        $page='true';
         
         
         if($page == "true")
         {         
+          
+          $this->session->set_userdata('username', $username);
+         
            
-           $this->session->set_userdata('username', $username);
-           //$_SESSION['username'] = $username;
-           $this->load->view('pages/main.php');                 
+            $ch = curl_init("https://dev-gardenshift.rhcloud.com/Gardenshift/get_notification_unread/".$username);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            $json_res = curl_exec($ch);
+            curl_close($ch);
+           
+            $json_array = json_decode($json_res);
+            if(count($json_array) !=0)
+            $unreadmsgs = $json_array->{'notifications_unread'};
+            //$msgcount=count($usermessages);
+            $data['msgcount'] = count($unreadmsgs);
+            
+            $ch1 = curl_init("https://dev-gardenshift.rhcloud.com/Gardenshift/get_bulletin/".$username);
+            curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch1, CURLOPT_HEADER, 0);
+            $json_res = curl_exec($ch1);
+            curl_close($ch1);
+           
+            $json_array = json_decode($json_res);
+            if(count($json_array) !=0)
+            $bulletin = $json_array->{'bulletin'};
+            //$msgcount=count($usermessages);
+            $data['bulletin'] = $bulletin;
+            
+            
+           $this->load->view('pages/main.php',$data);                 
         }
         else echo 'Invalid username or password';
             
