@@ -70,5 +70,16 @@ var newUser = document.getElementById('newUser');
 newUser.onclick = showAddUser;
 
 
+function submitenter(myfield,e)
+    {
+      
 
+        if (keycode == 13)
+        {
+        alert("asfasf");
+       
+        }
+        else
+        return true;
+    }
 }

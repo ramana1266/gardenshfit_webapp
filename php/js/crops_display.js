@@ -10,31 +10,12 @@ $(document).ready(function() {
      
     var oTable =  $('#table_id').dataTable({
       
-        
-        "bScrollCollapse": true,
-        "bJQueryUI": true,
-       
-        
-        "bInfo": false,
-        "bAutoWidth": false,
-        "aoColumns" : [
-        {
-            sWidth: '50px'
-        },
-        {
-            sWidth: '50px'
-        },
-        {
-            sWidth: '50px'
-        },
-           
-        {
-            sWidth: '50px'
-        },
-        {
-            sWidth: '50px'
-        }
-        ]     
+          
+                                    "bPaginate": true,
+                                    "bScrollCollapse": true,
+                                    "bJQueryUI": true,
+                                    "sPaginationType": "full_numbers",
+                                    "bAutoWidth" : true
     });
     var nEditing = null;
     $('#table_id a.edit').live('click', function (e) {
@@ -120,6 +101,10 @@ $(document).ready(function() {
               
     }
     );
+         $( "#goBackButton" ).button().click(function() {
+        window.location='http://test-gardenshift.rhcloud.com/index.php/pages/mainPageLoader';
+              
+    });
 
 
 });

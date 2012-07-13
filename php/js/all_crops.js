@@ -26,6 +26,10 @@ $(document).ready(function() {
     $( "#addnewcrop" ).button().click(function() {
         $("#AddCrop").dialog('open'); 
     });
+         $( "#goBackButton" ).button().click(function() {
+        window.location='http://test-gardenshift.rhcloud.com/index.php/pages/mainPageLoader';
+              
+    });
     $( "#AddCrop" ).dialog({
         autoOpen: false,
         height: 520,

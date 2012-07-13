@@ -1,5 +1,3 @@
-
-<?php session_start();?>
 <html>                                                                  
     <head>   
      
@@ -10,38 +8,38 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
-        <link href="../../css/style.css" rel="stylesheet" type="text/css"/>
-        <link href="../../css/jquery-ui.css" rel="stylesheet" type="text/css"/>  
-        <link rel="stylesheet" type="text/css" href="../../css/jquery.validate.css" />
-        <link rel="stylesheet" type="text/css" href="../../css/style1.css" />
+        <link href="../../../css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="../../../css/jquery-ui.css" rel="stylesheet" type="text/css"/>  
+        <link rel="stylesheet" type="text/css" href="../../../css/jquery.validate.css" />
+        <link rel="stylesheet" type="text/css" href="../../../css/style1.css" />
 
         
 
-        <script src="../../js/jquery.validate.js" type="text/javascript"></script>
-        <script src="../../js/formValidation.js" type="text/javascript"></script>
+        <script src="../../../js/jquery.validate.js" type="text/javascript"></script>
+        <script src="../../../js/formValidation.js" type="text/javascript"></script>
         
            
 <style type="text/css" title="currentStyle">
-        @import "../../css/demo_page.css";
-        @import "../../css/jquery.dataTables.css";
+        @import "../../../css/demo_page.css";
+        @import "../../../css/jquery.dataTables.css";
 </style>
-<script type="text/javascript" language="javascript" src="../../js/jquery.dataTables.js"></script>
+<script type="text/javascript" language="javascript" src="../../../js/jquery.dataTables.js"></script>
 
-  <script type="text/javascript" src="../../js/all_crops.js"></script>
+  <script type="text/javascript" src="../../../js/all_crops.js"></script>
         
         
-        <link rel="stylesheet" type="text/css" href="../../css/all_crops.css" />
+        <link rel="stylesheet" type="text/css" href="../../../css/all_crops.css" />
 
      
         
 
     </head>
-    <body>
+   <body>
         <div id ="main">
       
 
     <div id="tablediv">
-        <button type="button" id ="addnewcrop" >Add a Crop</button> 
+        <button type="button" id ="addnewcrop" >Add a Crop</button>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;<button type="button" id ="goBackButton" >Go Back</button>
         <br/>
         <br/>
         <table id="table_id" class="display" style="width: 800px; background-color:grey; ">

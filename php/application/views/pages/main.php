@@ -14,6 +14,8 @@
 <link rel="stylesheet" type="text/css" href="../../css/jquery.validate.css" />
 <link rel="stylesheet" type="text/css" href="../../css/style1.css" />
 <link rel="stylesheet" type="text/css" href="../../css/userpage.css" />
+<link rel="stylesheet" type="text/css" href="../../css/jquery.noty.css" />
+<link rel="stylesheet" type="text/css" href="../../css/noty_theme_default.css" />
 <link href="https://code.google.com/apis/maps/documentation/javascript/examples/standard.css" rel="stylesheet" type="text/css" /> 
 
 <script type="text/javascript" src="http://jzaefferer.github.com/jquery-validation/jquery.validate.js"></script>
@@ -21,54 +23,445 @@
 <script src="../../js/jquery.validate.js" type="text/javascript"></script>
 <script src="../../js/formValidation.js" type="text/javascript"></script>
 <script src="../../js/main_init.js" type="text/javascript"></script>
-<script type="text/javascript" src="../../js/jquery.noty.js"></script>
-<script type="text/javascript" src="../../js/promise.js"></script>
-
-<link rel="stylesheet" type="text/css" href="../../css/jquery.noty.css"/>
-<link rel="stylesheet" type="text/css" href="../../css/noty_theme_default.css"/>
-<link rel="stylesheet" href="../../css/jquery.tooltip.css" type="text/css" />
-    
-    <script type="text/javascript" src="../../js/jquery.tooltip.js"></script>
+<script src="../../js/feedback.js" type="text/javascript"></script>
+<script src="../../js/cropsProfilePage.js" type="text/javascript"></script>
+<script src="../../js/status.js" type="text/javascript"></script>
+<script src="../../js/friends.js" type="text/javascript"></script>
+<script src="../../js/googleMaps.js" type="text/javascript"></script>
+<script src="../../js/changePicture.js" type="text/javascript"></script>
+<script src="../../js/jquery.noty.js" type="text/javascript"></script>
+<script src="../../js/promise.js" type="text/javascript"></script>
 
 <style type="text/css">
       html { height: 100% }
-      body { height: 100%; margin: 0; padding: 0; background-image: url("images/plain.png"); background-size: 100% 100%; background-repeat: repeat; }
-      #map_canvas { height: 100% }
+      body { height: 100%; margin: 0; padding: 0; background-image: url("../../images/plain.png"); background-size: 100% 100%; background-repeat: repeat; }
 </style>
 
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA8k4FFdveeM0HszPabxQCNOfGmZGTUqDQ&sensor=false"></script>
 
-    
-<style type="text/css" title="currentStyle">
-        @import "../../css/demo_page.css";
-        @import "../../css/jquery.dataTables.css";
+<link rel="stylesheet" type="text/css" href="../../css/jquery.dataTables.css" />   
 </style>
 <script type="text/javascript" language="javascript" src="../../js/jquery.dataTables.js"></script>
 
-<style type="text/css">
-    
-    #test{
-    background-color:red;
-    width:10px;
-    height:22.5px;
-    display:block;
-    border-radius:12px;
-    -moz-border-radius:12px;
-    -webkit-border-radius:12px;
-    -khtml-border-radius:12px;
-    font-size:15px;
-    color:#fff;
-text-align:center;
-}
-</style>
+
+
+
 
  
 </head>
 
 <script>  
     
-     $(document).ready(function(){
-  var msgcount=<?php echo($msgcount) ?>;
+ function viewProfile()
+    {
+        
+      var total_friends = 0;  
+    
+      var name = $("#searchField").val();
+      
+      var addfrndbutton = true; // Stores boolean value to determine if the friend is already in the list or not
+    
+                     
+                    
+    
+     if(name != "<?php echo $this->session->userdata('username'); ?>")
+    
+            {
+                $("#status_txtbox").hide();
+                $("#status_bt").hide();   
+                
+            }
+     else
+            {
+                $("#status_txtbox").show();
+                $("#status_bt").show();  
+                $("#pendingReq").show();
+            }
+
+
+    $.ajax({
+            type:"POST",
+            url:"http://test-gardenshift.rhcloud.com/index.php/pages/visit_user",
+            data: { "name" : name},
+            success: function(response)        
+            {
+                document.getElementById('statusDiv').innerHTML = "No Updates";
+                document.getElementById('CropsDiv').innerHTML = "No Recent Crops";
+                document.getElementById('feedbackDiv').innerHTML = "No Feedback Received";
+                document.getElementById('friendsDiv').innerHTML = "No friends yet";
+                document.getElementById('friendsText').innerHTML = "Friends (0)";
+                document.getElementById('feedbackText').innerHTML = "Feedbacks (0)";
+                  
+                   
+                
+                     
+                 var obj = jQuery.parseJSON(response);
+                 
+              
+                    // Update Recent Crops
+                    
+                    var msg = "<ul>";
+ 
+                            
+                    for(i= obj.user_crops.length - 1; i>=0 ; i--)
+                        {
+                            
+                            if(!isNaN(obj.feedback.length))
+                                {
+                                            msg += "<li>";
+                                            msg += "<h3>" + obj.user_crops[i].crop_name + "</h3>";
+                                            msg += "<p><a href='#' id='logout'>" + obj.user_crops[i].crop_harvest_date + "</a></p>";
+                                            msg += "</li>";                                          
+                                                
+                                }
+                                
+                            if(obj.user_crops.length - i == 3 )
+                                break;
+                                    
+                                
+                                
+                        }
+                        
+                        
+                     msg += "</ul>";
+                   
+                     document.getElementById('CropsDiv').innerHTML = msg;
+                     
+                     
+                     // Update Recent Status
+                     
+                     var msg = "<ul>";
+                    
+                   
+ 
+                            
+                    for(i= obj.status.length -1 ; i>=0 ; i--)
+                        {
+                            
+                            if(!isNaN(obj.status.length))
+                                {
+                                            msg += "<li>";
+                                            msg += "<h3>" + obj.status[i].text + "</h3>";
+                                            msg += "<p><a href='#' id='logout'>" + obj.status[i].date + "</a>";
+                                            
+                                    if(name == "<?php echo $this->session->userdata('username'); ?>")    
+                                            msg += "<img src='../../images/delete.png' width= 15px height=15px align='right' onclick='deleteStatus(this.id)' id='" + obj.status[i].date + "' />";
+                                            msg += "</p></li>";                                          
+                                                
+                                }
+                          
+                        }
+                        
+                        
+                     msg += "</ul>";
+                   
+                     document.getElementById('statusDiv').innerHTML = msg;
+                     
+                     
+                     // Update Recent feedback
+                     
+                     var msg = "<ul>";
+ 
+                            
+                    for(i=obj.feedback.length -1; i>=0; i--)
+                        {
+                            
+                            if(!isNaN(obj.feedback.length))
+                                {
+                                            msg += "<li>";
+                                            msg += "<h3>" + obj.feedback[i].from + "</h3>";
+                                            msg += "<p><a href='#' id='logout'>" + obj.feedback[i].text + "</a></p>";
+                                            msg += "</li>";                                          
+                                                
+                                }
+                                
+                            if(obj.feedback.length - i == 3 )
+                                break;
+                                    
+                                
+                                
+                        }
+                        
+                        
+                     msg += "</ul>";
+                   
+                     document.getElementById('feedbackDiv').innerHTML = msg;
+                     
+                     if("<?php echo $this->session->userdata('username'); ?>" != name)
+                     document.getElementById('feedbackText').innerHTML = "Feedbacks <a href='#' id='feedbackTxtBtn_guest'>(" + obj.feedback.length +")</a> <button id='addFeedback_btn' value='" + obj.username + "' onclick='showFeedbackDialog()' > Add </button> ";
+                     else
+                     document.getElementById('feedbackText').innerHTML = "Feedbacks <a href='#' id='feedbackTxtBtn_guest'>(" + obj.feedback.length +")</a>";
+                         
+               if(isNaN(obj.feedback.length) )
+                                {
+                                   document.getElementById('feedbackText').innerHTML = "Feedbacks <a href='#' id='feedbackTxtBtn_guest'>(0)</a>";
+                                }
+                      
+                      // Create a dataTable of all the feedbacks
+                      
+                      var feedbackGst = document.getElementById('feedbackTxtBtn_guest');
+                      feedbackGst.onclick = showAllfGuestFeedback_f;
+                      
+                      var msg = "<table cellpadding='0' cellspacing='0' border='0' id='feedbackTable_Guest'>";
+                            msg += "<thead><tr>";
+                            msg += "<th>User</th>";                    
+                            msg += "<th>Comments</th></thead><tbody>";
+                            
+                            
+                    for(i=0; i< obj.feedback.length; i++)
+                        {
+                            
+                            if(!isNaN(obj.feedback.length))
+                                {
+                                            msg += "<tr>";
+                                            msg += "<td>" + obj.feedback[i].from + "</td>";
+                                            msg += "<td>" + obj.feedback[i].text + "</td>";
+                                            msg += "</tr>";                                          
+                                     
+                                }
+                                
+                                
+                        }
+                        
+                        
+                     msg += "</tbody></table>";
+                   
+                     document.getElementById('feedbackPopUp').innerHTML = msg;
+                     
+                     $("#feedbackTable_Guest").dataTable( {
+                                  
+                                    "bPaginate": false,
+                                    "bScrollCollapse": true,
+                                    "bJQueryUI": true,
+                                    "sPaginationType": "full_numbers",
+                                    "bAutoWidth" : true
+                            });
+                     
+                  
+                   // Update friend list
+                   
+                    var msg = "<ul>";
+                  
+                   
+ 
+                            
+                    for(i= obj.friends.length -1 ; i>=0 ; i--)
+                        {
+                            
+                            if(!isNaN(obj.friends.length))
+                                {
+                                            if(obj.friends[i].status == "accepted")
+                                                {
+                                                        total_friends++;
+                                                        
+                                                        if(total_friends < 4)
+                                                                {                                                      
+                                                                    msg += "<li>";
+                                                                    msg += "<h3>" + obj.friends[i].friends_username + "</h3>";
+                                                                    msg += "</li>"; 
+                                                                }
+                                                                                                                                                               
+                                                         if(obj.friends[i].friends_username == "<?php echo $this->session->userdata('username'); ?>" || obj.friends[i].friends_username == name)
+                                                            {
+                                                                addfrndbutton = false;   
+                                                                document.getElementById('userGreetings').innerHTML = name + "'s Profile (friends)";
+                                                            }                                                       
+                                                }
+                                            
+                                            
+                                           if(obj.friends[i].status == "pending")
+                                               {
+                                                    if(obj.friends[i].friends_username == "<?php echo $this->session->userdata('username'); ?>")
+                                                            {
+                                                                addfrndbutton = false; 
+                                                                document.getElementById('userGreetings').innerHTML = name + "'s Profile (Pending)";
+                                                            }
+                                               }
+                                }
+                          
+                        }
+                        
+                    
+                     msg += "</ul>";
+                     
+                     document.getElementById('friendsText').innerHTML = "Friends <a href='#' id='friendsTxtBtn_guest'>(" + total_friends + ")</a> ";
+                 
+                    
+                     if(addfrndbutton)
+                     document.getElementById('userGreetings').innerHTML = name + "'s Profile" + "<button name='addfriends_bt' id='" + name +"' onclick=addFriends(this.id); > Add </button>";
+                    
+                     
+     
+     
+                     if("<?php echo $this->session->userdata('username'); ?>" == name)
+                     document.getElementById('userGreetings').innerHTML = "Welcome, " + name;
+                          
+                   
+                     document.getElementById('friendsDiv').innerHTML = msg;
+                     
+                   
+                     $("#pendingReq").hide();
+                     
+                    
+                     
+                     // Update profile picture to reflect that of user
+                     
+                    var urladdress = obj.picture;
+                                    
+                    var msg = "<image src=" + urladdress + " width= 220px; height=150px />";
+                    
+                    if("<?php echo $this->session->userdata('username'); ?>" == name)
+                    msg+= "<button id='changePicture_btn' style='position:absolute; left:160px; top:50px' onclick='showChangeProfileDialog()'> Change </button>";
+                    
+                    $("#changePicture_btn").hide();
+                  
+                   
+                    document.getElementById('profilePictureDiv').innerHTML = msg;
+                    
+                    
+                    
+                       
+                   // Create a dataTable of all the friends
+                      
+                      var frdGst = document.getElementById('friendsTxtBtn_guest');
+                      frdGst.onclick = showAllfGuestfriends_f;
+                      
+                     var msg = "<table cellpadding='0' cellspacing='0' border='0' id='friendsTable'>";
+                            msg += "<thead><tr>";
+                            msg += "<th>User</th>";                    
+                            msg += "</thead><tbody>";
+                            
+                            
+                    for(i=0; i< obj.friends.length; i++)
+                        {
+                            
+                            if(!isNaN(obj.friends.length))
+                                {
+                                            msg += "<tr>";
+                                            msg += "<td>" + obj.friends[i].friends_username + "</td>";
+                                            msg += "</tr>";                                                                         
+                                }
+                                
+                                
+                        }
+                        
+                        
+                     msg += "</tbody></table>";
+                   
+                     document.getElementById('friendsPopUp').innerHTML = msg;
+                     
+                     $("#friendsTable").dataTable( {
+                                  
+                                    "bPaginate": false,
+                                    "bScrollCollapse": true,
+                                    "bJQueryUI": true,
+                                    "sPaginationType": "full_numbers",
+                                    "bAutoWidth" : true
+                            });
+                     
+                     
+ 
+                    
+                     
+                     
+ 
+            }
+        });
+    }
+    
+       
+    
+    
+    
+    
+    
+    
+    
+    	
+        
+        
+        
+        function setTags()
+    {
+        
+        var availableTags = [];
+        
+        $.ajax({
+            type:"POST",
+            url:"http://test-gardenshift.rhcloud.com/index.php/pages/get_all_username",
+            success: function(response)
+            {
+                     
+                 var obj = jQuery.parseJSON(response);
+                
+                 for( i = 0; i< obj.length; i++)
+                     {
+                        
+                         availableTags.push(obj[i].username);
+
+                     }
+                     
+                       $( "#searchField" ).autocomplete({
+			source: availableTags
+		});
+              
+
+            }
+        });
+        
+         
+       
+        
+        
+    }
+    
+    
+    
+    
+   function reloadHomePage()
+   {
+         
+    //   showAvailableCrops();
+    //  showFeedback();
+    showRecentFeedback();
+    // showAllCrops();
+    showRecentCrops();
+    showRecentStatus();
+    setTags();
+    showRecentFriends();
+    showPendingFriends();
+    showProfilePicture();
+     
+    $("#pictureURL").hide();
+     
+    document.getElementById('userGreetings').innerHTML = "Welcome, " + "<?php echo $this->session->userdata('username'); ?>" ;
+    $("#status_txtbox").show();
+    $("#status_bt").show();  
+    $("#changePicture_btn").hide();
+        
+   }
+   
+     $(document).ready( function() {
+         
+         main_init();
+    //     showAvailableCrops();
+    //  showFeedback();
+    showRecentFeedback();
+    // showAllCrops();
+    showRecentCrops();
+    showRecentStatus();
+    setTags();
+    showRecentFriends();
+    showPendingFriends();
+    showProfilePicture();
+
+    $("#pictureURL").hide();
+    
+    
+    var msgcount=<?php echo($msgcount) ?>;
+  
+
+
     //alert(msgcount);
     $.noty({
   layout : 'topRight', // (top, topLeft, topCenter, topRight, bottom, center, bottomLeft, bottomRight)
@@ -90,95 +483,59 @@ text-align:center;
   modal : false// adds modal layer when set to true
 
   
-});
-
-   
-});
     
-    
-    
-    function showAvailableCrops()
-    {
-        // Populate crops table for all the available crops that a user can trade with
-           $.ajax({
-                type:"POST",
-                url:"http://localhost/gs/php/index.php/pages/get_crops",
-                success: function(response)
-                {
-                     
-
-                    var obj = jQuery.parseJSON(response);
-                    
-                   
-                    var msg = "<table cellpadding='0' style='width: 100px;' cellspacing='0' border='0' id='example' width='50%'>";
-                            msg += "<thead><tr>";
-                            msg += "<th>User</th>";
-                            msg += "<th>Crop</th>";
-                            msg += "<th>Quantity</th>";
-                            msg += "<th>Harvestation Date</th>";
-                            msg += "<th>Email</th>";
-                            msg += "<th>Zipcode</th>";
-                            msg += "<th>Comments</th></thead><tbody>";
-                            
-                            
-                    for(i=0; i< obj.length; i++)
-                        {
-                            
-                            if(!isNaN(obj[i].user_crops.length))
-                                {
-                                    for(j=0; j< obj[i].user_crops.length; j++)
-                                        {
-                                            msg += "<tr>";
-                                            msg += "<td>" + obj[i].name + "</td>";
-                                            msg += "<td>" + obj[i].user_crops[j].crop_name + "</td>";
-                                            msg += "<td>" + obj[i].user_crops[j].crop_expected_quantity + "</td>";
-                                            msg += "<td>" + obj[i].user_crops[j].crop_harvest_date + "</td>";
-                                            msg += "<td>" + obj[i].email + "</td>";
-                                            msg += "<td>" + obj[i].zipcode + "</td>";
-                                            msg += "<td>" + obj[i].user_crops[j].comments + "</td>";
-                                            msg += "</tr>";                                          
-                                        }
-                                    
-                                }
-                                
-                                
-                        }
-                        
-                        
-                     msg += "</tbody></table>";
-                   
-                     document.getElementById('crops').innerHTML = msg;
-                     
-                     $("#example").dataTable( {
-                                    "sScrollY": "200px",
-                                    "bPaginate": false,
-                                    "bScrollCollapse": true,
-                                    "bJQueryUI": true,
-                                    "sPaginationType": "full_numbers",
-                                    "bAutoWidth" : true
-                            });
-                     
-                     }
-                
- 
-            });
-  
-  
-    
-    }
-   
-     $(document).ready( function() {
-         
-         
-        //   showAvailableCrops();
-               var i = 0;
-    (function(){
-    i++;
-    $('#test').html(i)
-    setTimeout(arguments.callee, 1000);
-    })();
-           
      });
+     
+     $("#notifications").click(function(e) {
+      e.preventDefault(); // if desired...
+      // other methods to call...
+      flag=1;
+      if(flag=1){
+     $("#notifications1").show();
+     $("#subid").hide( 'slow', function() {});
+     $.ajax({
+         url: 'http://test-gardenshift.rhcloud.com/index.php/pages/flush_bulletin',
+        dataType: 'text',
+        success: function(data) {}
+     });
+      }
+    });
+         $("#messages_link").click(function(e) {
+      // if desired...
+      // other methods to call...
+
+    
+     $("#messages_subid").hide( 'slow', function() {});
+   
+      
+    });
+
+   $("#morenotifs").click(function(e){ 
+   
+   $("#morenotifsdiv").dialog( {height: 620,
+        width: 420});
+    }); 
+    
+
+   
+    });
+    
+    
+   var statusIntervalId = window.setInterval(update, 30000);
+
+function update() {
+    $.ajax({
+        url: 'http://test-gardenshift.rhcloud.com/index.php/pages/get_bulletin_count',
+        dataType: 'text',
+        success: function(data) {
+           if(data!=0){
+           document.getElementById("subid").innerHTML="&nbsp;"+ data +"&nbsp;";
+           $("#subid").show( 'slow', function() { });
+           document.getElementById("notifications1").style.display="none";
+           }
+        }
+    });
+}
                      
     
     // Populate the setings dialog with user data from the database
@@ -188,7 +545,7 @@ text-align:center;
         
         $.ajax({
             type:"POST",
-            url:"http://localhost/gs/php/index.php/pages/get_userdata",
+            url:"http://test-gardenshift.rhcloud.com/index.php/pages/get_userdata",
             success: function(response)
             {
                      
@@ -212,152 +569,79 @@ text-align:center;
     function nearByCrops_f()
     {
         $( "#mapData" ).dialog('open');
+      
     }
     
     function myCrops_f()
     {
-        window.location = "http://localhost/gs/php/index.php/crop/mycrops/"+'<?php echo $this->session->userdata('username'); ?>';
-    }
-    
-    function allcrops_f()
-    {
-        window.location = "http://localhost/gs/php/index.php/crop/allcrops";
+        window.location = "http://test-gardenshift.rhcloud.com/index.php/crop/mycrops/"+'<?php echo $this->session->userdata('username'); ?>';
     }
     
    
-    function update_maps()
+    function showChangeButton()
     {
-        
-            
-        var data = $("#mapdataForm").serialize();
-       
-            
-        var l1 = 37.7699298;
-        var l2 = -122.4469157;
-
-        var map;
-        var geocoder = new google.maps.Geocoder();
-
-        var markersArray = [];
-
-        var haightAshbury = new google.maps.LatLng(35.7699298, -78.4469157);
-
-        var mapOptions = {
-            zoom: 8,
-            center: haightAshbury,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        map =  new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-
-        google.maps.event.addListener(map, 'click', function(event) {
-
-        });
-            
-            
-            
-        var markersArray = [];
-
-        $.ajax({
-        type:"POST",
-        url:"http://localhost/gs/php/index.php/pages/get_mapdata",
-        data: data,
-        success: function(response)
-            {
-                         
-                 var obj = jQuery.parseJSON(response);
-                 
-                  
-                for(i=0; i< obj.length; i++)
-                                        {
-
-                                            if(!isNaN(obj[i].zipcode))
-                                                {
-                                                  
-                                                  codeAddress(obj[i]);  
-
-                                                }
-
-
-                                        }                
-                 
-                 showOverlays();
-                 
-
-            }
-        });
-        
-    
-        function addMarker(lat, log) {
-                marker = new google.maps.Marker({
-                position: new google.maps.LatLng(lat, log),
-                map: map
-                });
-                markersArray.push(marker);
-        }
-
-
-        function showOverlays() {
-        if (markersArray) {
-            for (i in markersArray) {
-            markersArray[i].setMap(map);
-            }
-        }
-        }
-        
-        
-        function codeAddress(obj) {
-            
-            var address = obj.zipcode;
-            
-            geocoder.geocode( { 'address': address}, function(results, status) {
-                
-            
-            if (status == google.maps.GeocoderStatus.OK) {
-                
-               
-                var marker = new google.maps.Marker({
-                    map: map, 
-                    position: results[0].geometry.location,
-                    title: obj.name
-
-                    
-                });
-            } else {
-                alert("Geocode was not successful for the following reason: " + status);
-            }
-            });
-        }
- 
-           
-            
-            
+    $("#changePicture_btn").show();
     }
+    
+    
+    function showChangeProfileDialog()
+    {
+        $("#pictureURL").dialog('open');
+    }
+
+    
+    
+    
+    
+    
+    
+    
     
     
   
 
 </script>
 
-<body onload="main_init()">
+<body>
     
     
     
     
-    <div id="map_canvas" style="position: absolute; top: 45%; left: 35%; width:30%; height:30%"></div>
+    <div id="map_canvas" width="100%"></div>
      
 
-    <div id="crops" style="position: absolute; top: 15%; left: 15%; width: 70%; height: 500px"></div>
+    <div id="showCropsAll"></div>
+    
+    <div id="feedbackPopUp"></div>
+    
+    <div id="friendsPopUp"></div>
+    
+    <div id="pictureURL">
+            <table>
+                        <tr>
+                            <td><label for="URL" align="left">URL:</label> </td>                             
+                            <td><input type="text" name="username" id="pictureURLtxt" placeholder="Enter URL" /></td>
+                        </tr> 
+    
+            </table> 
+    </div>
+    
+    <div id="addFeedbackPopUp">
+        Please enter your feedback carefully. Once it's added it cannot be deleted. <br>
+        <input type="text" name="username" id="addFeedbacktxt" placeholder="Enter your Feedback" />
+            
+    </div>
 
     
 <!--    Menu-->
     <div style="margin-left:35%; position: absolute; top: 0; z-index:1">
     
     <ul id="menu">
-        <li class="logo"><img style="float:left;" alt="" src="../../images/menu_left.png"/> </li>
+        <li class="logo"><img style="float:left;"  src="../../images/menu_left.png" onclick="reloadHomePage()" /> </li>
         
-        <li><a href="http://localhost/gs/php/index.php/message/mymessages/<?php echo $this->session->userdata('username'); ?>" id="messages" style="width: 160px">Messages (<?php echo($msgcount) ?>)</a></li>
+        <li><a href="http://test-gardenshift.rhcloud.com/index.php/message/mymessages/<?php echo $this->session->userdata('username'); ?>" id="messages_link" style="width: 160px">Messages <b id ="message_subid" style="background:red; text:black; " ><?php if($msgcount!=0){ echo '&nbsp;'; echo($msgcount);  echo '&nbsp;';}?>  </b></a></li>
         
-        <li><a href='#' id="username" style="width: 160px">Options</a>
+        <li><a href='#' id="" style="width: 160px">Options</a>
            
              <ul id="username">
                     <li>
@@ -367,9 +651,11 @@ text-align:center;
                         
                     </li>
                     
+                    
                     <li><a href="#" id="mycrops">My Crops</a></li>
-                    <li><a href="#" id="nearByCrops">Crops Around Me</a></li>
+                    <li><a href="#" id="allUserCropsShow">Available Crops</a></li>
                     <li><a href="#" id="allcrops">All crops</a></li>
+                    <li><a href="#" id="nearByCrops">Crops Around Me</a></li>
                     <li><a href="#" id="settings">Settings</a></li>
                     <li><a href="#" id="logout">Logout</a></li>
                     
@@ -381,37 +667,125 @@ text-align:center;
             </ul>
         </li>
        
-        <li><a href='#' id="notifications" style="width: 160px">Notifications <strong><b id ="subid"style="background:red; text:black; "> &nbsp;<?php echo(count($bulletin)) ?>&nbsp; </b></strong></a>
-        <ul id="notifications">
+       <li><a href='javascript: ' id="notifications" style="width: 160px">Notifications <strong><b id ="subid" style="background:red; text:black; " ><?php if($bulletincount!=0){ echo '&nbsp;'; echo($bulletincount); echo '&nbsp;';}?>  </b></strong></a>
+        <ul id="notifications1" style ="display:none; width: 400px">
                    
                        
                         <?php 
-                         echo count($bulletin);
-                        for ($c = 0; $c < count($bulletin); $c++) {
+                        $i=0;
+                            for($i;$i<$bulletincount&&$i<=10;$i++)
+                            {
+                            echo '<li><strong>';
+                       echo '<a href="'; 
+                        if (strpos($notarray[$bulletincount-$i-1],'message') == TRUE) {
                            
-                        echo '<li>';
-                        if($c=0){echo ' <img class="corner_inset_left" alt="" src="../../images/corner_inset_left.png"/>';}
-                        echo '<a href="#">'.$bulletin[$c]->{'text'}.'</a>';
-                        echo '</li>';
+                         echo 'http://test-gardenshift.rhcloud.com/index.php/message/mymessages/'.$this->session->userdata('username').'">';
+                         }
+                         else if(strpos($notarray[$bulletincount-$i-1],'Feedback') == TRUE){
+                             echo '<script type="text/javascript"> showAllFeedback(); <script>'; 
+                         }
+                         
+                         else echo '#">';
+                       
+                       echo $notarray[$bulletincount-$i-1]; 
+                       echo'</a>';
+                        echo ' </strong></li>';
+                            }
+                            
+                            for($i;$i<count($notarray_read) && $i<=10;$i++)
+                            {
+                            echo '<li>';
+                       echo '<a href="'; 
+                        if (strpos($notarray_read[count($notarray_read)-$i-1],'message') == TRUE) {
+                           
+                         echo 'http://test-gardenshift.rhcloud.com/index.php/message/mymessages/'.$this->session->userdata('username').'">';
+                         }
+                         
+                          else if(strpos($notarray[$bulletincount-$i-1],'Feedback') == TRUE){
+                             echo '<script type="text/javascript"> showAllFeedback(); <script>'; 
+                         }
+                         
+                         else echo '#">';
+                       
+                       
+                       echo $notarray_read[count($notarray_read)-$i-1]; 
+                       echo'</a>';
+                        echo ' </li>';
+                            }
                             
                         
-                        }
                         ?>
+                         <li style="background:#0395CC; padding-left:0px; margin:0px 0px; padding: 5px 0px; "><center><strong><a id="morenotifs" style="color:#172322;">View more notifications...</a></strong></center></li>
                         
                        
             </ul>
         </li> 
      
-       
+        
+        <li>  <div>
+                <input type="text" id="searchField" />
+                <img src="../../images/magnifier.png" alt="Search" onclick="viewProfile()" /></div>
+</li> 
+        
     </ul>
     
 <img style="float:left;" alt="" src="../../images/menu_right.png"/>
 
-</div>  
+</div> 
+
+<div id="morenotifsdiv" style="display:none;">
+        <?php 
+                        $i=0;
+                            for($i;$i<$bulletincount&&$i<=50;$i++)
+                            {
+                            echo '<li><strong>';
+                       echo '<a style="text-decoration:none; a:hover {text-decoration:underline;}" href="'; 
+                        if (strpos($notarray[$bulletincount-$i-1],'message') == TRUE) {
+                           
+                         echo 'http://test-gardenshift.rhcloud.com/index.php/message/mymessages/'.$this->session->userdata('username').'">';
+                         }
+                         
+                          else if(strpos($notarray[$bulletincount-$i-1],'Feedback') == TRUE){
+                             echo '<script type="text/javascript"> showAllFeedback(); <script>'; 
+                         }
+                         
+                         else echo '#">';
+                       
+                       
+                       echo $notarray[$bulletincount-$i-1]; 
+                       echo'</a>';
+                        echo ' </strong></li>';
+                            }
+                            
+                            for($i;$i<count($notarray_read) && $i<=50;$i++)
+                            {
+                            echo '<li>';
+                       echo '<a style="text-decoration:none; a:hover {text-decoration:underline;}" href="'; 
+                        if (strpos($notarray_read[count($notarray_read)-$i-1],'message') == TRUE) {
+                           
+                         echo 'http://test-gardenshift.rhcloud.com/index.php/message/mymessages/'.$this->session->userdata('username').'">';
+                         }
+                         
+                          else if(strpos($notarray[$bulletincount-$i-1],'Feedback') == TRUE){
+                             echo '<script type="text/javascript"> showAllFeedback(); <script>'; 
+                         }
+                         
+                         else echo '#">';
+                       
+                       
+                       echo $notarray_read[count($notarray_read)-$i-1]; 
+                       echo'</a>';
+                        echo ' </li>';
+                            }
+                            
+                        
+                        ?>
+ 
+</div>
     
 <div id="userSettingsDialog">
     
-  <form id="userSettingsForm" action="http://localhost/gs/php/index.php/pages/post_userdata" method="POST">
+  <form id="userSettingsForm" action="http://test-gardenshift.rhcloud.com/index.php/pages/post_userdata" method="POST">
       <table>
                 <tr>
                     <td><label for="name" align="left">Name</label> </td>                             
@@ -439,7 +813,7 @@ text-align:center;
     
 <div id="mapData">
     
-  <form id="mapdataForm" action="http://localhost/gs/php/index.php/pages/get_mapdata" method="POST">
+  <form id="mapdataForm" action="http://test-gardenshift.rhcloud.com/index.php/pages/get_mapdata" method="POST">
       <table>
                 <tr>
                     <td><label for="name" align="left">Crop Name</label> </td>                             
@@ -460,54 +834,70 @@ text-align:center;
   </form>
 </div>
 
+
+
+
 <!--Start of user multi column home page-->
 
 
 <div id="page" >
-	<div id="content" style=" position: absolute; top: 10%; left: 40%; width: 40%; height: 800px; z-index:0; background-image: url('../../images/content_bg.jpg'); background-size: 100%; background-repeat: repeat">
+	<div id="content" style=" position: absolute; top: 10%; left: 40%; width: 40%; z-index:0; background-image: url('../../images/content_bg.jpg'); background-size: 100%; background-repeat: repeat">
 		
-                <div>
+                <div id="status_bts">
 		
-                       <input type="text" name="status" id="status" style= "width: 550px; height: 40px;" placeholder="What's in your farm?"/> 
-                       <button name="status_bt" id="status_bt" value="POST" style= "height: 40px;" > Share </button> 
+                       <input type="text" name="status" id="status_txtbox" style= "width: 550px; height: 40px;" placeholder="What's in your farm?"/> 
+                       <button name="status_bt" id="status_bt" value="POST" style= "height: 40px;" onclick=updateStatus();> Share </button> 
+		</div>
+            
+                <div id="statusDiv">
+		
+                      
 		</div>
 		
 	</div>
     
-	<div id="sidebar" style="position: absolute; top: 9%; left: 25%; width: 100; height: 500px;">
+	<div id="sidebar" style="position: absolute; top: 9%; left: 25%; width: 300; height: 500px;">
             
-		<div id="profilePicture" class="boxed">
-			<h2 class="title">Welcome, <?php echo $this->session->userdata('username'); ?></h2>
-                        <image src="css/images/img04.jpg" style="widht: 300px; height:100px" >
-			
+		<div id="profilePicture" class="boxed" onmouseover="showChangeButton()" onmouseout=" $('#changePicture_btn').hide();"  >
+                    
+			<h2 class="title" id="userGreetings">Welcome, <?php echo $this->session->userdata('username'); ?> </h2>
+                        
+                        <div id="profilePictureDiv">
+                            
+                          
+                            
+                        </div>
 		</div>
             
-		<div id="news" class="boxed">
+		<div class="boxed">
 			<h2 id="myCrops" class="title">Past Crops</h2>
-			<div class="content">
-				<ul>
-					<li class="first">
-						<h3>04 July 2007</h3>
-						<p><a href="#">Corn</a></p>
-					</li>
-					<li>
-						<h3>29 June 2007</h3>
-						<p><a href="#">Tomatoes</a></p>
-					</li>
-					
-				</ul>
+			<div class="content" id="CropsDiv">
+				
 			</div>
 		</div>
             
-		<div id="extra" class="boxed">
-			<h2 class="title">Looking for</h2>
-			<div class="content">
-				<ul class="list">
-					<li class="first"><a href="#">Potatoes</a></li>
-					<li><a href="#">Onions</a></li>
-					<li><a href="#">Garlic</a></li>
-				</ul>
+		<div class="boxed">
+			<h2 class="title" id="friendsText"></h2>
+			<div  class="content" id="friendsDiv">
+				
 			</div>
+		</div>
+            
+            
+                <div class="boxed">
+			<h2 class="title" id="feedbackText"></h2>
+			<div class="content" id="feedbackDiv">
+                                                
+                        </div>
+                       
+		</div>
+            
+                <div class="boxed" id ="pendingReq">
+			<h2 class="title" >Pending Request</h2>
+			<div class="content" id="pendingFriends">
+                                                
+                        </div>
+                       
 		</div>
             
 		<div id="footer">
@@ -517,6 +907,8 @@ text-align:center;
 		</div>
 	</div>
 </div>
+
+
 
 </body>
 </html>

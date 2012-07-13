@@ -38,7 +38,7 @@ class Message extends CI_Controller {
              $this->load->view('pages/messages', $data);
             }
             else{
-                header('Location: http://localhost/gs/php');
+                header('Location: http://test-gardenshift.rhcloud.com');
             }
     }
     public function updatenotif(){
@@ -53,7 +53,7 @@ class Message extends CI_Controller {
             echo $res;
             }
             else{
-                header('Location: http://localhost/gs/php');
+                header('Location: http://test-gardenshift.rhcloud.com');
             }
             
        
@@ -70,7 +70,7 @@ class Message extends CI_Controller {
             echo $res;
             }
             else{
-                header('Location: http://localhost/gs/php');
+                header('Location: http://test-gardenshift.rhcloud.com');
             }
     }
        public function deletenotif_read(){
@@ -85,7 +85,7 @@ class Message extends CI_Controller {
             echo $res;
             }
             else{
-                header('Location: http://localhost/gs/php');
+                header('Location: http://test-gardenshift.rhcloud.com');
             }
        
     }
@@ -95,6 +95,7 @@ class Message extends CI_Controller {
             $from = $_POST['from'];
             $text = $_POST['text'];
             $url = 'http://dev-gardenshift.rhcloud.com/Gardenshift/send_notification';
+           
             session_start();
              $this->load->library('session');
            
@@ -107,11 +108,19 @@ class Message extends CI_Controller {
 
             $page = curl_exec ($c);
             curl_close ($c);
-            $res=file_get_contents('https://dev-gardenshift.rhcloud.com/Gardenshift/add_bulletin/'.$username.'/'.'You have received a new message from '.$from);
-            
+            $url1 = 'http://dev-gardenshift.rhcloud.com/Gardenshift/add_bulletin';
+            $body1 = 'username='.$username.'&text= '.$from.' sent you a message';
+            $c1 = curl_init ($url1);
+            curl_setopt ($c1, CURLOPT_POST, true);
+            curl_setopt ($c1, CURLOPT_POSTFIELDS, $body1);
+            curl_setopt ($c1, CURLOPT_RETURNTRANSFER, true);
+
+            $page = curl_exec ($c1);
+            curl_close ($c1);
+           
             }
             else{
-                header('Location: http://localhost/gs/php');
+                header('Location: http://test-gardenshift.rhcloud.com');
             }
             
     }

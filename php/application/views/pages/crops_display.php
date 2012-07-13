@@ -33,7 +33,7 @@
         
        
     </head>                                                                 
-    <body onload="onLoadf()">
+   <body onload="onLoadf()">
         <script type="text/javascript">
             window.onload= function(){
                 
@@ -50,7 +50,7 @@
 </div>
 
 
-            <div id ="addcropbuttondiv"><button type="button" id ="addCropButton" >Add a Crop</button> 
+            <div id ="addcropbuttondiv"><button type="button" id ="addCropButton" >Add a Crop</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;<button type="button" id ="goBackButton" >Go Back</button>
                 <br/>
                 <br/>   
             </div>
